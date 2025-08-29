@@ -1,0 +1,1 @@
+Create a quiz on the topic "{topic}" with difficulty level {difficulty}.
