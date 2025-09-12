@@ -3,7 +3,6 @@ package com.pooju.quizlet.service;
 import com.pooju.quizlet.model.Quiz;
 import com.pooju.quizlet.repository.QuizRepository;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -11,7 +10,6 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,13 +60,13 @@ public class QuizService {
     public Quiz getQuiz(String topic, int difficulty, String sessionID, Boolean refresh) {
 
         servedIds.putIfAbsent(sessionID, ConcurrentHashMap.newKeySet());
-        logger.info("SessionID: " + sessionID + ", Served IDs: " + servedIds.get(sessionID).toString());
+        logger.info("SessionID: " + sessionID + ", Served IDs: " + servedIds.get(sessionID).size());
 
         List<Quiz> unservedQuiz = new ArrayList<>(getQuizFromDB(topic, difficulty)
                 .stream()
                 .filter(quiz -> !servedIds.get(sessionID).contains(quiz.getId()))
                 .toList());
-        logger.info("Unserved Quiz Count: " + unservedQuiz.size());
+        logger.info("SessionID: " + sessionID + ", Unserved Quiz Count: " + (unservedQuiz.size()-1));
         if (!refresh){
             if (!unservedQuiz.isEmpty()) {
                 Collections.shuffle(unservedQuiz);
