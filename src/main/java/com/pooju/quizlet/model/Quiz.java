@@ -1,10 +1,13 @@
 package com.pooju.quizlet.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -21,6 +24,11 @@ public class Quiz {
     private String topic;
     private int difficulty;
     private List<Questions> questions;
+    @JsonIgnore
+    private List<Double> embedding;
+    @Transient
+    @JsonIgnore
+    private double score;
 
 
 }
