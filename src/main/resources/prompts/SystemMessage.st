@@ -5,6 +5,4 @@ Difficulty levels:
 2 = easy,
 3 = medium,
 4 = hard,
-5 = very hard.
-Always respond with only a JSON object containing the topic, difficulty, and the list of questions with options and the correct answer.
-Do not include any extra text outside the JSON.
+5 = extremly hard.
