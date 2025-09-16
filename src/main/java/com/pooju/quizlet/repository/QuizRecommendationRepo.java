@@ -35,35 +35,19 @@ public class QuizRecommendationRepo {
                 ),
                 new Document("$match",
                         new Document("topic", new Document("$ne", topic))
-                )
-        );
+                ),
+                new Document("$set", new Document("_score", new Document("$meta", "vectorSearchScore"))),
+                new Document("$match", new Document("_score", new Document("$gte", minScore)))
 
+        );
 
 
         List<Quiz> quizzes = new ArrayList<>();
         mongoTemplate.getCollection("Quiz")
                 .aggregate(pipeline)
                 .forEach(doc -> quizzes.add(mongoTemplate.getConverter().read(Quiz.class, doc)));
-        return quizzes.stream()
-                .peek(q -> {
-                    double score = cosineSimilarity(queryVector, q.getEmbedding());
-                    q.setScore(score);
-                })
-                .filter(q -> q.getScore() >= minScore)
-                .sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
-                .limit(10)
-                .collect(Collectors.toList());
-
+        return quizzes;
 
     }
 
-    private double cosineSimilarity(List<Double> v1, List<Double> v2) {
-        double dot = 0.0, norm1 = 0.0, norm2 = 0.0;
-        for (int i = 0; i < v1.size(); i++) {
-            dot += v1.get(i) * v2.get(i);
-            norm1 += v1.get(i) * v1.get(i);
-            norm2 += v2.get(i) * v2.get(i);
-        }
-        return dot / (Math.sqrt(norm1) * Math.sqrt(norm2));
-    }
 }
